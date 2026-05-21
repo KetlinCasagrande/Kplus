@@ -25,6 +25,6 @@ Automatizar um fluxo de consultas que antes era feito manualmente, reduzindo tem
 ## 🔧 Tecnologias utilizadas
 
 - Python
-- Play wright
+- Playwright
 - Pandas (se você estiver usando Excel)
 - PyInstaller (para gerar o executável)
