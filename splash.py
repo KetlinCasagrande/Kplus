@@ -1,9 +1,7 @@
 import customtkinter as ctk
 import time
 
-# ============================================
-# SPLASH
-# ============================================
+
 def mostrar_splash():
 
     ctk.set_appearance_mode("dark")
@@ -25,9 +23,9 @@ def mostrar_splash():
 
     splash.configure(fg_color="#09090b")
 
-    # ============================================
+   
     # CONTAINER
-    # ============================================
+    
     container = ctk.CTkFrame(
         splash,
         fg_color="transparent"
@@ -35,9 +33,9 @@ def mostrar_splash():
 
     container.pack(expand=True)
 
-    # ============================================
-    # LOGO TEXT
-    # ============================================
+    
+    # TEXTO 
+   
     logo = ctk.CTkLabel(
         container,
         text="K+",
@@ -47,9 +45,8 @@ def mostrar_splash():
 
     logo.pack(pady=(30, 10))
 
-    # ============================================
-    # SUBTITLE
-    # ============================================
+    
+    
     subtitle = ctk.CTkLabel(
         container,
         text="Automação inteligente de consultas CLT",
@@ -59,9 +56,9 @@ def mostrar_splash():
 
     subtitle.pack(pady=(0, 35))
 
-    # ============================================
-    # PROGRESS BAR
-    # ============================================
+  
+    # BARRA DE PROGRESSO 
+    
     progress = ctk.CTkProgressBar(
         container,
         width=260,
@@ -75,9 +72,7 @@ def mostrar_splash():
 
     progress.set(0)
 
-    # ============================================
-    # LOADING
-    # ============================================
+
     loading = ctk.CTkLabel(
         container,
         text="Inicializando sistema...",
@@ -89,9 +84,9 @@ def mostrar_splash():
 
     splash.update()
 
-    # ============================================
-    # ANIMAÇÃO
-    # ============================================
+  
+
+    
     for i in range(100):
 
         progress.set(i / 100)

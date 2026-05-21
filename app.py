@@ -8,9 +8,7 @@ from PIL import Image
 import sys
 import os
 
-# ============================================
-# GET ASSET PATH
-# ============================================
+
 def resource_path(relative_path):
 
     try:
@@ -21,9 +19,7 @@ def resource_path(relative_path):
 
     return os.path.join(base_path, relative_path)
 
-# ============================================
-# LOGO
-# ============================================
+
 logo_img = ctk.CTkImage(
     light_image=Image.open(
         resource_path("assets/logo.png")
@@ -39,24 +35,19 @@ logo_img = ctk.CTkImage(
 
 from event_bus import event_queue
 
-# ============================================
-# CONFIG
-# ============================================
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")
 
-# ============================================
-# APP
-# ============================================
+
 app = ctk.CTk()
 
 app.geometry("1280x760")
 app.title("K+")
 app.minsize(1100, 700)
 
-# ============================================
-# COLORS
-# ============================================
+
+# CORES
+
 BG = "#0d0d0d"
 CARD = "#151515"
 CARD2 = "#111111"
@@ -65,25 +56,21 @@ SUBTEXT = "#8f8f8f"
 
 app.configure(fg_color=BG)
 
-# ============================================
-# STATE
-# ============================================
+
 resultados = {}
 last_file = None
 output_file = None
 
-# ============================================
-# HEADER
-# ============================================
+
 header = ctk.CTkFrame(
     app,
     fg_color=BG
 )
 
 header.pack(fill="x", pady=(20, 10), padx=25)
-# ============================================
+
 # LOGO
-# ============================================
+
 logo_label = ctk.CTkLabel(
     header,
     image=logo_img,
@@ -92,9 +79,9 @@ logo_label = ctk.CTkLabel(
 
 logo_label.pack(side="left", padx=(0, 15))
 
-# ============================================
+
 # BRAND
-# ============================================
+
 
 
 subtitle = ctk.CTkLabel(
@@ -106,9 +93,9 @@ subtitle = ctk.CTkLabel(
 
 subtitle.pack(side="left", padx=(15, 0), pady=(10, 0))
 
-# ============================================
+
 # STATUS
-# ============================================
+
 status_label = ctk.CTkLabel(
     header,
     text="🟢 Sistema pronto",
@@ -118,9 +105,9 @@ status_label = ctk.CTkLabel(
 
 status_label.pack(side="right")
 
-# ============================================
+
 # MAIN
-# ============================================
+
 main = ctk.CTkFrame(
     app,
     fg_color="transparent"
@@ -128,9 +115,9 @@ main = ctk.CTkFrame(
 
 main.pack(fill="both", expand=True, padx=25, pady=10)
 
-# ============================================
+
 # LEFT
-# ============================================
+
 left = ctk.CTkFrame(
     main,
     fg_color="transparent"
@@ -138,9 +125,9 @@ left = ctk.CTkFrame(
 
 left.pack(side="left", fill="y", padx=(0, 15))
 
-# ============================================
-# PROGRESS CARD
-# ============================================
+
+
+
 progress_card = ctk.CTkFrame(
     left,
     width=340,
@@ -190,9 +177,9 @@ progress = ctk.CTkProgressBar(
 progress.pack(pady=(25, 0))
 progress.set(0)
 
-# ============================================
+
 # ACTIONS
-# ============================================
+
 actions_card = ctk.CTkFrame(
     left,
     width=340,
@@ -220,9 +207,7 @@ buttons_frame = ctk.CTkFrame(
 
 buttons_frame.pack(pady=10)
 
-# ============================================
-# RIGHT
-# ============================================
+
 right = ctk.CTkFrame(
     main,
     fg_color=CARD,
@@ -250,17 +235,14 @@ log_box = ctk.CTkTextbox(
 
 log_box.pack(fill="both", expand=True, padx=20, pady=(0, 20))
 
-# ============================================
-# LOG
-# ============================================
+
 def log(msg):
 
     log_box.insert("end", msg + "\n")
     log_box.see("end")
 
-# ============================================
-# LOAD CSV
-# ============================================
+
+
 def load_csv():
 
     global resultados
@@ -299,9 +281,9 @@ def load_csv():
 
     log("📁 CSV carregado")
 
-# ============================================
+
 # RUN
-# ============================================
+
 def run():
 
     if not resultados:
@@ -324,9 +306,7 @@ def run():
         daemon=True
     ).start()
 
-# ============================================
-# OPEN RESULT
-# ============================================
+
 def open_csv():
 
     global output_file
@@ -335,16 +315,13 @@ def open_csv():
 
         os.startfile(output_file)
 
-# ============================================
-# OPEN FOLDER
-# ============================================
+
 def open_folder():
 
     os.startfile("resultados")
 
-# ============================================
-# BUTTON STYLE
-# ============================================
+# BUTTONS
+
 btn_style = {
     "width": 125,
     "height": 48,
@@ -355,9 +332,7 @@ btn_style = {
     "text_color": "white"
 }
 
-# ============================================
-# BUTTONS
-# ============================================
+
 btn1 = ctk.CTkButton(
     buttons_frame,
     text="📁 CSV",
@@ -394,9 +369,9 @@ btn4 = ctk.CTkButton(
 
 btn4.grid(row=1, column=1, padx=8, pady=8)
 
-# ============================================
+
 # EVENT LOOP
-# ============================================
+
 def event_loop():
 
     global output_file
@@ -445,9 +420,9 @@ def event_loop():
 
     app.after(200, event_loop)
 
-# ============================================
+
 # START
-# ============================================
+
 def start():
 
     event_loop()

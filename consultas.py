@@ -5,9 +5,9 @@ import os
 import json
 from datetime import datetime
 
-# =========================
+
 # CONFIG
-# =========================
+
 URL = "https://sistema.somabp2.com.br/privado/consultas"
 CHECKPOINT = "checkpoint.json"
 
@@ -18,16 +18,16 @@ STATUS_ERRO = "erro"
 STATUS_OK = "ok"
 STATUS_NAO_ELEGIVEL = "nao_elegivel"
 
-# =========================
+
 # CSV
-# =========================
+
 df = pd.read_csv("clientes.csv", sep=";", dtype=str)
 df.columns = df.columns.str.strip().str.lower()
 clientes = df.to_dict("records")
 
-# =========================
+
 # UTIL
-# =========================
+
 def carregar():
     if os.path.exists(CHECKPOINT):
         try:
@@ -44,9 +44,7 @@ def salvar(data):
     with open(CHECKPOINT, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
-# =========================
-# BASE
-# =========================
+
 resultados = carregar()
 
 for c in clientes:
@@ -62,9 +60,9 @@ for c in clientes:
             "link": None
         }
 
-# =========================
+
 # BROWSER
-# =========================
+
 def browser(p):
     chrome_path = r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
 
@@ -78,9 +76,9 @@ def browser(p):
     page = context.new_page()
     return context, page
 
-# =========================
+
 # ACEITE
-# =========================
+
 def aceitar_termo(page, link, cpf):
     try:
         page.goto(link, wait_until="domcontentloaded")
@@ -105,9 +103,9 @@ def aceitar_termo(page, link, cpf):
         print(f"❌ erro aceite {cpf}: {e}")
         return False
 
-# =========================
+
 # CONSULTA ESTEIRA
-# =========================
+
 def consultar_esteira(page, cpf):
     try:
         page.locator("button[title='Filtros']").first.click()
@@ -141,18 +139,16 @@ def consultar_esteira(page, cpf):
         print(f"❌ erro consulta {cpf}: {e}")
         return None, None
 
-# =========================
-# 🔥 FIX PRINCIPAL (NÃO TRAVA NO 1 CPF)
-# =========================
+
 pendentes = [
     (cpf, data)
     for cpf, data in resultados.items()
     if data["status"] == STATUS_PENDENTE
 ]
 
-# =========================
+
 # EXECUÇÃO
-# =========================
+
 with sync_playwright() as p:
 
     context, page = browser(p)
@@ -162,9 +158,7 @@ with sync_playwright() as p:
         try:
             print(f"\n📤 PROCESSANDO {cpf}")
 
-            # =========================
-            # ENVIO
-            # =========================
+            
             page.goto(URL)
             page.wait_for_timeout(2000)
 
@@ -180,9 +174,6 @@ with sync_playwright() as p:
 
             time.sleep(3)
 
-            # =========================
-            # LINK
-            # =========================
             linhas = page.locator("tr")
             link = None
 
@@ -211,16 +202,10 @@ with sync_playwright() as p:
             resultados[cpf]["status"] = STATUS_ENVIADO
             salvar(resultados)
 
-            # =========================
-            # ACEITE
-            # =========================
             aceite_page = context.new_page()
             aceitar_termo(aceite_page, link, cpf)
             aceite_page.close()
 
-            # =========================
-            # CONSULTA FINAL
-            # =========================
             status_final, margem = consultar_esteira(page, cpf)
 
             if status_final:
@@ -236,9 +221,9 @@ with sync_playwright() as p:
 
     context.close()
 
-# =========================
-# EXPORT FINAL
-# =========================
+
+# EXPORT RESULTADOS
+
 output = f"resultado_final_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
 
 pd.DataFrame(resultados.values()).to_excel(output, index=False)

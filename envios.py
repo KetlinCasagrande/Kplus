@@ -5,9 +5,7 @@ import os
 import json
 from datetime import datetime
 
-# =========================
-# CONFIG
-# =========================
+
 URL = "https://sistema.somabp2.com.br/privado/consultas"
 CHECKPOINT = "checkpoint.json"
 
@@ -15,18 +13,18 @@ STATUS_PENDENTE = "pendente"
 STATUS_ENVIADO = "enviado"
 STATUS_ERRO = "erro"
 
-# =========================
+
 # CSV
-# =========================
+
 df = pd.read_csv("clientes.csv", sep=";", dtype=str)
 
 df.columns = df.columns.str.strip().str.lower()
 
 clientes = df.to_dict("records")
 
-# =========================
-# UTIL
-# =========================
+
+
+
 def carregar():
 
     if os.path.exists(CHECKPOINT):
@@ -50,9 +48,7 @@ def salvar(data):
     with open(CHECKPOINT, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
-# =========================
-# CHECKPOINT
-# =========================
+
 resultados = carregar()
 
 for c in clientes:
@@ -70,9 +66,9 @@ for c in clientes:
             "link": None
         }
 
-# =========================
+# 
 # BROWSER
-# =========================
+#
 def browser(p):
 
     chrome_path = r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
@@ -98,9 +94,9 @@ def browser(p):
 
     return context, page
 
-# =========================
+
 # ACEITE
-# =========================
+
 def aceitar_termo(page, link, cpf):
 
     try:
@@ -187,9 +183,9 @@ def aceitar_termo(page, link, cpf):
 
         return False
 
-# =========================
-# EXECUÇÃO
-# =========================
+
+# EXEC
+
 with sync_playwright() as p:
 
     context, page = browser(p)
@@ -207,9 +203,9 @@ with sync_playwright() as p:
 
             page.wait_for_load_state("networkidle")
 
-            # =========================
+        
             # NOVA CONSULTA
-            # =========================
+            
             page.get_by_role(
                 "button",
                 name="Nova Consulta"
@@ -217,9 +213,7 @@ with sync_playwright() as p:
 
             page.wait_for_timeout(1500)
 
-            # =========================
-            # CPF
-            # =========================
+            
             page.get_by_role(
                 "textbox",
                 name="CPF do cliente"
@@ -232,9 +226,7 @@ with sync_playwright() as p:
 
             page.wait_for_timeout(2000)
 
-            # =========================
-            # NOME / TELEFONE
-            # =========================
+        
             page.get_by_role(
                 "textbox",
                 name="Nome do cliente"
@@ -252,9 +244,7 @@ with sync_playwright() as p:
 
             page.wait_for_timeout(4000)
 
-            # =========================
-            # LOCALIZA LINHA
-            # =========================
+            
             linhas = page.locator("tr")
 
             link = None
@@ -271,9 +261,7 @@ with sync_playwright() as p:
 
                     cols = linha.locator("td")
 
-                    # =========================
-                    # COPIA LINK
-                    # =========================
+                    
                     cols.nth(5).click(force=True)
 
                     page.wait_for_timeout(1500)
@@ -289,9 +277,7 @@ with sync_playwright() as p:
 
                     break
 
-            # =========================
-            # LINK
-            # =========================
+           
             if not link:
 
                 print("❌ link não encontrado")
@@ -308,9 +294,6 @@ with sync_playwright() as p:
 
             salvar(resultados)
 
-            # =========================
-            # NOVA ABA
-            # =========================
             aceite_page = context.new_page()
 
             ok = aceitar_termo(
@@ -341,9 +324,7 @@ with sync_playwright() as p:
 
     context.close()
 
-# =========================
-# EXPORT FINAL
-# =========================
+
 output = f"resultado_envios_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
 
 pd.DataFrame(

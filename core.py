@@ -9,9 +9,9 @@ from datetime import datetime
 URL = "https://sistema.somabp2.com.br/privado/consultas"
 
 
-# =========================================
-# CHROME PATH
-# =========================================
+
+# CHROME
+
 def get_chrome_path():
 
     possible_paths = [
@@ -33,9 +33,9 @@ def get_chrome_path():
     return None
 
 
-# =========================
+
 # ACEITE
-# =========================
+
 def aceitar_termo(context, link, cpf):
 
     try:
@@ -86,9 +86,9 @@ def aceitar_termo(context, link, cpf):
         return False
 
 
-# =========================
+
 # CONSULTA FINAL
-# =========================
+
 def consultar(page, cpf):
 
     try:
@@ -136,9 +136,9 @@ def consultar(page, cpf):
         return None, None
 
 
-# =========================
+
 # EXPORT INTELIGENTE
-# =========================
+
 def salvar_resultado_inteligente(
     resultados,
     input_file=None
@@ -178,9 +178,9 @@ def salvar_resultado_inteligente(
     return caminho
 
 
-# =========================
-# PIPELINE COMPLETO
-# =========================
+
+# PIPELINE
+
 def executar_pipeline(
     clientes,
     resultados,
@@ -200,9 +200,7 @@ def executar_pipeline(
 
     with sync_playwright() as p:
 
-        # =========================================
-        # CONTEXTO
-        # =========================================
+    
         context = p.chromium.launch_persistent_context(
 
             executable_path=chrome_path,
@@ -223,9 +221,9 @@ def executar_pipeline(
             "🚀 Iniciando processamento..."
         )
 
-        # =========================
+        
         # ENVIO + LINK + ACEITE
-        # =========================
+        
         for c in clientes:
 
             cpf = c["cpf"]
@@ -268,9 +266,7 @@ def executar_pipeline(
 
                 time.sleep(3)
 
-                # =========================
-                # LINK
-                # =========================
+                
                 linhas = page.locator("tr")
 
                 link = None
@@ -337,9 +333,9 @@ def executar_pipeline(
                     f"❌ erro {cpf}: {e}"
                 )
 
-        # =========================
-        # CONSULTA FINAL
-        # =========================
+      
+        # CONSULTA 
+       
         emit(
             "log",
             "🔎 Consulta final..."
@@ -371,9 +367,9 @@ def executar_pipeline(
 
         context.close()
 
-        # =========================
-        # EXPORT FINAL
-        # =========================
+        
+        # EXPORT RESULTADOS
+        
         output_file = salvar_resultado_inteligente(
             resultados,
             input_file=input_file
